@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Product App</title>
+</head>
+
+<body>
+    <div>
+        <h2>Alle Producten</h2>
+        <ul id="products" />
+    </div>
+    <div>
+        <h2>Zoek op ID</h2>
+        <input type="text" id="prodId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="product" />
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.mins.js"></script>
+
+    <script>
+        var uri = "api/products";
+
+        $(document).ready(function () {
+            // Ajax request verzenden
+            $.getJson(uri)
+                .done(function (data) // on success, "data" bevat de lijst van producten
+                {
+                    $.each(data, function (key, item) {
+                        $('<li>', { text: formatItem(item) }).appendTo($('#products'));
+                    });
+                });
+        });
+
+        function formatItem(item) {
+            return item.Name + ': €' + item.Price;
+        }
+
+        function find() {
+            var id = $('#prodId').val();
+            $.getJson(uri + ' / ' + id)
+                .done(function (data) {
+                    $.('#product').text(formatItem(data));
+                });
+        }
+    </script>
+
+</body>
+</html>
